@@ -1,0 +1,36 @@
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# PyTorch Models and Embeddings
+*.pt
+*.pth
+*.pkl
+
+# Directories that contain large or dynamically generated files
+models/
+results/
+Dataset/
+dataset/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Project-specific temporary files
+*.log
+*.zip
+*.gz
