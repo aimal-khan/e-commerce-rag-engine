@@ -1,45 +1,48 @@
-# End-to-End E-Commerce RAG & Multi-Task Analysis Engine
+# Multi-Task Transformer & Causal RAG Engine
+
+A PyTorch implementation from scratch of a Multi-Task Transformer Encoder and Retrieval-Augmented Generation (RAG) Causal Decoder for e-commerce review analysis.
 
 ## Overview
-This repository contains a custom-built, from-scratch implementation of a **Transformer-based Retrieval-Augmented Generation (RAG) system** in PyTorch. 
 
-Designed without reliance on high-level pre-trained libraries (like HuggingFace `transformers`), this project showcases deep understanding of attention mechanisms, multi-task learning, and vector-based retrieval. The system is built to process raw e-commerce reviews, classify them across multiple objectives, and autonomously generate context-aware, explainable responses using a custom decoder.
+Designed without high-level pre-trained wrapper libraries, this project implements core transformer mechanics in native PyTorch: multi-head self-attention, positional encoding, multi-task prediction heads, and causal masked generation. The pipeline processes user reviews, classifies sentiment alongside purchase veracity, and generates context-aware explanations using cosine retrieval over learned embedding representations.
 
-## Key Features & Architecture
+## Architecture
 
-### 1. Multi-Task Transformer Encoder (From Scratch)
-- Built a native PyTorch Encoder implementing Multi-Head Self-Attention, Positional Encoding, and Feed-Forward networks.
-- **Multi-Task Learning:** The encoder utilizes a `[CLS]` token to simultaneously predict:
-  - **Sentiment:** (Negative, Neutral, Positive)
-  - **Purchase Verification:** Distinguishing verified vs. unverified purchases.
-- Trained jointly using a weighted composite loss function.
+### 1. Multi-Task Transformer Encoder
+- Native PyTorch encoder with scaled dot-product multi-head attention and feed-forward sublayers.
+- Multi-task output heads via `[CLS]` token pooling:
+  - Sentiment classification: Negative, Neutral, Positive.
+  - Purchase verification: Verified vs. unverified transactions.
+- Joint training using a weighted multi-task cross-entropy loss.
 
-### 2. Custom Data Pipeline & Tokenization
-- Engineered a lightweight, zero-dependency text preprocessing pipeline.
-- Implemented a custom byte-level/word-level vocabulary builder and tokenization engine tailored for messy user-generated e-commerce data.
-- Handles padding, dynamic sequence lengths, and special token injection (`<BOS>`, `<EOS>`, `<CLS>`, `<PAD>`, `<UNK>`).
+### 2. Custom Tokenization Pipeline
+- Zero-dependency vocabulary generation and tokenization tailored for review text.
+- Manages sequence padding, truncation, dynamic batch collation, and special token injection (`<BOS>`, `<EOS>`, `<CLS>`, `<PAD>`, `<UNK>`).
 
-### 3. Retrieval-Augmented Generation (RAG) Pipeline
-- **Vector Indexing:** Extracts and indexes high-dimensional `[CLS]` embeddings from the trained Encoder for the entire corpus.
-- **Context Retrieval:** Uses cosine similarity to fetch the top-k most relevant historical reviews when queried.
-- **Causal Transformer Decoder:** A from-scratch auto-regressive Decoder model featuring causal masking. It intakes the user query along with the retrieved context to generate coherent, explainable text regarding the product's sentiment.
+### 3. Retrieval-Augmented Generation Pipeline
+- **Vector Indexing**: Extracts `[CLS]` embedding representations across the review corpus.
+- **Context Retrieval**: Computes cosine similarity to select the top-k relevant reviews for input queries.
+- **Causal Transformer Decoder**: Auto-regressive decoder with causal triangular masking to synthesize retrieved review contexts into human-readable explanations.
 
 ## Tech Stack
-- **Frameworks:** PyTorch
-- **Data Processing:** Pandas, NumPy, Scikit-learn
-- **Visualization:** Matplotlib, Seaborn
-- **Environment:** Python 3.10+
 
-## How it Works
-1. **Preprocessing:** Raw `.json.gz` dumps are cleaned and tokenized.
-2. **Phase 1 (Understanding):** The multi-task encoder learns deep contextual representations while classifying sentiment and veracity.
-3. **Phase 2 (Retrieval):** The trained encoder maps the corpus into a searchable semantic vector space.
-4. **Phase 3 (Generation):** A user query fetches relevant contexts from the vector space. The custom Causal Decoder synthesizes this context into a human-readable explanation.
+- PyTorch
+- NumPy, Pandas, Scikit-learn
+- Python 3.10+
 
-## Project Structure
-- `*.ipynb` - Core implementation containing the architectures, training loops, and evaluation matrices.
-- `/models/` - Directory storing the `.pt` weights for both the Encoder and Decoder.
-- `/results/` - Training logs, learning curves, and evaluation artifacts (F1-scores, Confusion Matrices).
+## Pipeline Flow
+
+1. **Preprocessing**: Raw JSON review dumps are cleaned, tokenized, and mapped to integer sequences.
+2. **Phase 1 (Representation & Classification)**: The encoder learns contextual representations while optimizing joint classification objectives.
+3. **Phase 2 (Index Building)**: Normalized encoder representations populate a semantic search vector index.
+4. **Phase 3 (Retrieval & Generation)**: Query embeddings retrieve top-k context passages, and the causal decoder generates explanatory text conditioned on the retrieved reviews.
+
+## Repository Structure
+
+- `ecommerce_multitask_rag_engine.ipynb`: Self-contained notebook containing data loading, model architectures, training loops, evaluation metrics, and inference demonstrations.
+- `models/`: Local target directory for saved `.pt` model checkpoints (git-ignored).
+- `results/`: Local target directory for training loss curves, evaluation reports, and confusion matrices (git-ignored).
 
 ---
-*This project serves as a technical showcase for advanced Deep Learning engineering, specifically targeting core NLP architectures, custom training loops, and end-to-end RAG pipelines.*
+
+Built by Aimal Khan.
